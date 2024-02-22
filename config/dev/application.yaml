@@ -1,0 +1,28 @@
+logging:
+  level:
+    root: info
+  pattern:
+    console: "%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %highlight(%-5level) | %magenta(%-25.25logger{25}) | %m%n"
+spring:
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 10s
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+      routes:
+        - id: membersModules
+          uri: http://members.default.svc.cluster.local:8080
+          predicates:
+            - Path=/members/**
+          filters:
+            - RewritePath=/members/(?<path>.*), /$\{path}
