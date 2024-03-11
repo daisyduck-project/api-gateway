@@ -26,3 +26,9 @@ spring:
             - Path=/members/**
           filters:
             - RewritePath=/members/(?<path>.*), /$\{path}
+        - id: momentsModules
+          uri: http://moments.default.svc.cluster.local:8080
+          predicates:
+            - Path=/moments/**
+          filters:
+            - RewritePath=/moments/(?<path>.*), /$\{path}

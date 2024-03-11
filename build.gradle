@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.bagusmwicaksono.daisyduckproject'
-version = getArtifactVersion()
+version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '21'
@@ -43,19 +43,4 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-task getArtifactVersion {
- doLast {
-  println getArtifactVersion()
- }
-}
-
-private def getArtifactVersion() {
- def artifactVersion = "1.0.0-SNAPSHOT"
- if (!artifactVersion.contains("SNAPSHOT")) {
-  return artifactVersion
- }
- def details = versionDetails()
- return artifactVersion.replace("SNAPSHOT", details.gitHash + (details.isCleanTag ? "" : "-dirty"))
 }

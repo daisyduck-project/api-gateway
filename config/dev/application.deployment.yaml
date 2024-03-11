@@ -26,14 +26,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: api-gateway:{{version}}
+          image: api-gateway:0.0.1-SNAPSHOT
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
-          volumeMounts:
-            - name: gateway-application-config
-              mountPath: /app/config
-      volumes:
-        - name: gateway-application-config
-          configMap:
-            name: gateway-config
