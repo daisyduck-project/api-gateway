@@ -4,9 +4,25 @@ metadata:
   name: api-gateway
 build:
   artifacts:
-    - image: api-gateway
+    - image: gcr.io/daisyduck-reborn/api-gateway
       docker:
         dockerfile: Dockerfile
 manifests:
   rawYaml:
     - config/dev/application.deployment.yaml
+deploy:
+  kubectl: {}
+profiles:
+  - name: staging
+    build:
+      googleCloudBuild: 
+        projectId: daisyduck-reborn
+      artifacts:
+      - image: gcr.io/daisyduck-reborn/api-gateway
+        docker:
+          dockerfile: Dockerfile
+    manifests:
+      rawYaml:
+      - config/stag/application.deployment.yaml
+    deploy:
+      kubectl: {}
