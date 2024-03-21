@@ -1,0 +1,44 @@
+steps:
+#Testing
+- name: 'gradle:8-jdk21' 
+  entrypoint: 'gradle'
+  args: ['test']
+#Gradle build
+- name: 'gradle:8-jdk21' 
+  entrypoint: 'gradle'
+  args: ['assemble']
+#step 2
+- name: gcr.io/cloud-builders/docker
+  args: [
+   'build', 
+   '-t', 
+   'gcr.io/daisyduck-reborn/api-gateway:${COMMIT_SHA}',
+   '-t', 
+   'gcr.io/daisyduck-reborn/api-gateway:latest',
+   '.'
+  ]
+#step 3
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'config/stag/application.deployment.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+#step 4
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: [
+   'set', 
+   'image', 
+   'deployment', 
+   'api-gateway', 
+   'api-gateway=gcr.io/daisyduck-reborn/api-gateway:${COMMIT_SHA}'
+  ]
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+# push images to Google Container Registry with tags
+images: [
+   'gcr.io/daisyduck-reborn/api-gateway:${COMMIT_SHA}',
+   'gcr.io/daisyduck-reborn/api-gateway:latest'
+  ]
+options:
+  logging: CLOUD_LOGGING_ONLY
